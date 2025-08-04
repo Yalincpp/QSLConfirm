@@ -1,27 +1,75 @@
-<h2>QSLConfirm Paneli</h2>
-<p>Hoş geldin, {{ current_user.callsign }}</p>
+{% extends "base.html" %}
+{% block title %}Panel{% endblock %}
 
-<h3>Yeni QSL Gönder</h3>
-<form method="post">
-  Alıcı Çağrı İşareti: <input name="to"><br>
-  Tarih: <input name="date" type="date"><br>
-  Saat: <input name="time" type="time"><br>
-  Band: <input name="band"><br>
-  Mod: <input name="mode"><br>
-  RST Gönderilen: <input name="rst_sent"><br>
-  RST Alınan: <input name="rst_recv"><br>
-  Not: <textarea name="note"></textarea><br>
-  <button type="submit">Gönder</button>
-</form>
+{% block content %}
+  <h2>QSLConfirm Paneli</h2>
+  <p>Hoş geldin, <strong>{{ current_user.callsign }}</strong></p>
 
-<h3>Gönderilen QSL'ler</h3>
-{% for qsl in sent %}
-  <p>➝ {{ qsl.receiver_callsign }} | {{ qsl.date }} {{ qsl.time }} | {{ qsl.band }} {{ qsl.mode }} | {{ qsl.rst_sent }}/{{ qsl.rst_recv }}</p>
-{% endfor %}
+  <h3>Yeni QSL Gönder</h3>
+  <form method="post" class="row g-3 mb-4">
+    <div class="col-md-6">
+      <label for="to" class="form-label">Alıcı Çağrı İşareti</label>
+      <input type="text" class="form-control" id="to" name="to" required>
+    </div>
+    <div class="col-md-3">
+      <label for="date" class="form-label">Tarih</label>
+      <input type="date" class="form-control" id="date" name="date" required>
+    </div>
+    <div class="col-md-3">
+      <label for="time" class="form-label">Saat</label>
+      <input type="time" class="form-control" id="time" name="time" required>
+    </div>
+    <div class="col-md-3">
+      <label for="band" class="form-label">Band</label>
+      <input type="text" class="form-control" id="band" name="band" required>
+    </div>
+    <div class="col-md-3">
+      <label for="mode" class="form-label">Mod</label>
+      <input type="text" class="form-control" id="mode" name="mode" required>
+    </div>
+    <div class="col-md-3">
+      <label for="rst_sent" class="form-label">RST Gönderilen</label>
+      <input type="text" class="form-control" id="rst_sent" name="rst_sent" required>
+    </div>
+    <div class="col-md-3">
+      <label for="rst_recv" class="form-label">RST Alınan</label>
+      <input type="text" class="form-control" id="rst_recv" name="rst_recv" required>
+    </div>
+    <div class="col-12">
+      <label for="note" class="form-label">Not</label>
+      <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Gönder</button>
+    </div>
+  </form>
 
-<h3>Alınan QSL'ler</h3>
-{% for qsl in received %}
-  <p>← {{ qsl.sender_id }} | {{ qsl.date }} {{ qsl.time }} | {{ qsl.band }} {{ qsl.mode }} | {{ qsl.rst_sent }}/{{ qsl.rst_recv }}</p>
-{% endfor %}
+  <h3>Gönderilen QSL'ler</h3>
+  {% if sent %}
+    <div class="list-group mb-4">
+      {% for qsl in sent %}
+        <div class="list-group-item">
+          <strong>➝ {{ qsl.receiver_callsign }}</strong> | {{ qsl.date }} {{ qsl.time }} | {{ qsl.band }} {{ qsl.mode }} | {{ qsl.rst_sent }}/{{ qsl.rst_recv }}
+          {% if qsl.note %}<br><small>{{ qsl.note }}</small>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Henüz QSL gönderilmedi.</p>
+  {% endif %}
 
-<p><a href="/logout">Çıkış yap</a></p>
+  <h3>Alınan QSL'ler</h3>
+  {% if received %}
+    <div class="list-group">
+      {% for qsl in received %}
+        <div class="list-group-item">
+          <strong>← {{ qsl.sender_callsign }}</strong> | {{ qsl.date }} {{ qsl.time }} | {{ qsl.band }} {{ qsl.mode }} | {{ qsl.rst_sent }}/{{ qsl.rst_recv }}
+          {% if qsl.note %}<br><small>{{ qsl.note }}</small>{% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Henüz QSL alınmadı.</p>
+  {% endif %}
+
+{% endblock %}

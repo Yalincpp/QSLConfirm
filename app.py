@@ -101,6 +101,9 @@ def dashboard():
         flash('QSL gönderildi!')
     sent_qsls = QSL.query.filter_by(sender_id=current_user.id).all()
     received_qsls = QSL.query.filter_by(receiver_callsign=current_user.callsign).all()
+    for qsl in received_qsls:
+    sender = User.query.get(qsl.sender_id)
+    qsl.sender_callsign = sender.callsign if sender else "?"
     return render_template('dashboard.html', sent=sent_qsls, received=received_qsls)
 
 
@@ -108,3 +111,8 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
+received_qsls = QSL.query.filter_by(receiver_callsign=current_user.callsign).all()
+for qsl in received_qsls:
+    sender = User.query.get(qsl.sender_id)
+    qsl.sender_callsign = sender.callsign if sender else "?"
