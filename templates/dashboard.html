@@ -1,0 +1,27 @@
+<h2>QSLConfirm Paneli</h2>
+<p>Hoş geldin, {{ current_user.callsign }}</p>
+
+<h3>Yeni QSL Gönder</h3>
+<form method="post">
+  Alıcı Çağrı İşareti: <input name="to"><br>
+  Tarih: <input name="date" type="date"><br>
+  Saat: <input name="time" type="time"><br>
+  Band: <input name="band"><br>
+  Mod: <input name="mode"><br>
+  RST Gönderilen: <input name="rst_sent"><br>
+  RST Alınan: <input name="rst_recv"><br>
+  Not: <textarea name="note"></textarea><br>
+  <button type="submit">Gönder</button>
+</form>
+
+<h3>Gönderilen QSL'ler</h3>
+{% for qsl in sent %}
+  <p>➝ {{ qsl.receiver_callsign }} | {{ qsl.date }} {{ qsl.time }} | {{ qsl.band }} {{ qsl.mode }} | {{ qsl.rst_sent }}/{{ qsl.rst_recv }}</p>
+{% endfor %}
+
+<h3>Alınan QSL'ler</h3>
+{% for qsl in received %}
+  <p>← {{ qsl.sender_id }} | {{ qsl.date }} {{ qsl.time }} | {{ qsl.band }} {{ qsl.mode }} | {{ qsl.rst_sent }}/{{ qsl.rst_recv }}</p>
+{% endfor %}
+
+<p><a href="/logout">Çıkış yap</a></p>

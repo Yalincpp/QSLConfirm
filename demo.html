@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Free eQSL Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; background: #f4f4f4; }
+    h1 { text-align: center; }
+    form { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    input, select, textarea { width: 100%; margin: 8px 0; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 20px; border: none; background: #007bff; color: white; border-radius: 4px; cursor: pointer; }
+    .qsl-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <h1>eQSL Demo Platform</h1>
+
+  <form id="qslForm">
+    <label>Gönderen Çağrı İşareti:</label>
+    <input type="text" id="fromCallsign" required>
+
+    <label>Alıcı Çağrı İşareti:</label>
+    <input type="text" id="toCallsign" required>
+
+    <label>Tarih:</label>
+    <input type="date" id="date" required>
+
+    <label>Saat (UTC):</label>
+    <input type="time" id="time" required>
+
+    <label>Band:</label>
+    <select id="band">
+      <option>20m</option>
+      <option>40m</option>
+      <option>80m</option>
+      <option>15m</option>
+      <option>10m</option>
+    </select>
+
+    <label>Mod:</label>
+    <select id="mode">
+      <option>SSB</option>
+      <option>FT8</option>
+      <option>CW</option>
+      <option>RTTY</option>
+    </select>
+
+    <label>RST Gönderilen:</label>
+    <input type="text" id="rstSent" value="59">
+
+    <label>RST Alınan:</label>
+    <input type="text" id="rstRecv" value="59">
+
+    <label>Not:</label>
+    <textarea id="note" rows="3"></textarea>
+
+    <button type="submit">QSL Gönder</button>
+  </form>
+
+  <h2>Gönderilen eQSL Kartları</h2>
+  <div id="qslList"></div>
+
+  <script>
+    const form = document.getElementById('qslForm');
+    const qslList = document.getElementById('qslList');
+
+    const qslCards = [];
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const card = {
+        from: form.fromCallsign.value.toUpperCase(),
+        to: form.toCallsign.value.toUpperCase(),
+        date: form.date.value,
+        time: form.time.value,
+        band: form.band.value,
+        mode: form.mode.value,
+        rstSent: form.rstSent.value,
+        rstRecv: form.rstRecv.value,
+        note: form.note.value
+      };
+
+      qslCards.push(card);
+      renderQSLs();
+      form.reset();
+    });
+
+    function renderQSLs() {
+      qslList.innerHTML = '';
+      qslCards.forEach(card => {
+        qslList.innerHTML += `
+          <div class="qsl-card">
+            <strong>${card.from}</strong> ➝ <strong>${card.to}</strong><br>
+            <em>${card.date} @ ${card.time} UTC</em><br>
+            Band: ${card.band} | Mod: ${card.mode} | RST: ${card.rstSent}/${card.rstRecv}<br>
+            <small>${card.note}</small>
+          </div>
+        `;
+      });
+    }
+  </script>
+</body>
+</html>
